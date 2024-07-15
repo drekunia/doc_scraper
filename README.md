@@ -24,8 +24,8 @@ Before you begin, ensure you have the following installed:
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/drekunia/doc-scraper.git
-cd doc-scraper
+git clone https://github.com/drekunia/doc_scraper.git
+cd doc_scraper
 ```
 
 2. Install dependencies:
