@@ -31,5 +31,6 @@ doc_scraper-*.tar
 # escript binary
 doc_scraper
 
-# Generated pdf files
+# Generated files
 *.pdf
+*.html
