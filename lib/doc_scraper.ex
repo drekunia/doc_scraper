@@ -135,6 +135,7 @@ defmodule DocScraper do
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f8f9fa;
           }
           h1, h2, h3, h4, h5, h6 {
             color: #2c3e50;
@@ -142,7 +143,6 @@ defmodule DocScraper do
             margin-bottom: 0.5em;
           }
           .toc {
-            background-color: #f8f9fa;
             padding: 20px;
             margin-bottom: 30px;
             border-radius: 5px;
