@@ -82,11 +82,24 @@ defmodule DocScraper do
     </html>
     """
 
-    case PdfGenerator.generate(full_html, output_path: output_file) do
-      {:ok, filename} ->
-        IO.puts "PDF successfully generated at: #{filename}"
-      {:error, reason} ->
-        IO.puts "Error generating PDF: #{inspect(reason)}"
+    # case PdfGenerator.generate(full_html, output_path: output_file) do
+    #   {:ok, filename} ->
+    #     IO.puts "PDF successfully generated at: #{filename}"
+    #   {:error, reason} ->
+    #     IO.puts "Error generating PDF: #{inspect(reason)}"
+    # end
+
+    html_file = Path.rootname(output_file) <> ".html"
+    File.write!(html_file, full_html)
+
+    case System.cmd("wkhtmltopdf", [html_file, output_file]) do
+      {_, 0} ->
+        IO.puts "PDF successfully generated at: #{output_file}"
+      {error, _} ->
+        IO.puts "Error generating PDF: #{error}"
     end
+
+    # Optionally, remove the temporary HTML file
+    File.rm(html_file)
   end
 end
