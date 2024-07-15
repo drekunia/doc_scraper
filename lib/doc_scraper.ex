@@ -1,7 +1,7 @@
 defmodule DocScraper do
   def main(args) do
     url = List.first(args) || "https://example.com"
-    output_file = List.last(args) || "output.pdf"
+    output_file = args |> List.last() |> Path.expand()
 
     IO.puts "Scraping entire website from #{url}"
     content = scrape_website(url)
@@ -9,8 +9,7 @@ defmodule DocScraper do
     IO.puts "Generating PDF..."
     generate_pdf(content, output_file)
 
-    absolute_path = Path.expand(output_file)
-    IO.puts "PDF generated: #{absolute_path}"
+    IO.puts "PDF generation complete. Check: #{output_file}"
   end
 
   defp scrape_website(url) do
@@ -59,19 +58,35 @@ defmodule DocScraper do
   end
 
   defp generate_pdf(content, output_file) do
-    pdf_content = Enum.map(content, fn %{url: url, content: page_content} ->
+    html_content = Enum.map(content, fn %{url: url, content: page_content} ->
       """
-      #{String.duplicate("=", 80)}
-      #{url}
-      #{String.duplicate("=", 80)}
-
-      #{page_content}
-
-      #{String.duplicate("-", 80)}
+      <h1>#{url}</h1>
+      <hr>
+      <pre>#{page_content}</pre>
+      <hr>
       """
     end)
     |> Enum.join("\n\n")
 
-    PdfGenerator.generate(pdf_content, output_path: output_file)
+    full_html = """
+    <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; }
+          pre { white-space: pre-wrap; word-wrap: break-word; }
+        </style>
+      </head>
+      <body>
+        #{html_content}
+      </body>
+    </html>
+    """
+
+    case PdfGenerator.generate(full_html, output_path: output_file) do
+      {:ok, filename} ->
+        IO.puts "PDF successfully generated at: #{filename}"
+      {:error, reason} ->
+        IO.puts "Error generating PDF: #{inspect(reason)}"
+    end
   end
 end
